@@ -3,7 +3,7 @@ module github.com/fabcar/go
 go 1.13
 
 require (
-	github.com/golang/protobuf v1.3.2
+	google.golang.org/protobuf v1.31.0
 	github.com/hyperledger/fabric v2.1.1+incompatible
 	// github.com/golang/protobuf v1.3.2
 	// github.com/hyperledger/fabric v2.1.1+incompatible
