@@ -18,15 +18,15 @@ import (
 type SmartContract struct {
 }
 
-// Car :  Define the car structure, with 4 properties.  Structure tags are used by encoding/json library
-type Car struct {
-	Make   string `json:"make"`
-	Model  string `json:"model"`
-	Colour string `json:"colour"`
+// Artiste :  Define the Artiste structure, with 4 properties.  Structure tags are used by encoding/json library
+type Album struct {
+	AlbumName   string `json:"albumname"`
+	Ext  string `json:"ext"`
+	Title string `json:"title"`
 	Owner  string `json:"owner"`
 }
 
-type carPrivateDetails struct {
+type artistePrivateDetails struct {
 	Owner string `json:"owner"`
 	Price string `json:"price"`
 }
@@ -36,7 +36,7 @@ func (s *SmartContract) Init(APIstub shim.ChaincodeStubInterface) sc.Response {
 	return shim.Success(nil)
 }
 
-var logger = flogging.MustGetLogger("fabcar_cc")
+var logger = flogging.MustGetLogger("fabArtiste_cc")
 
 // Invoke :  Method for INVOKING smart contract
 func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response {
@@ -46,36 +46,36 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 	logger.Infof("Args length is : %d", len(args))
 
 	switch function {
-	case "queryCar":
-		return s.queryCar(APIstub, args)
+	case "queryAlbum":
+		return s.queryAlbum(APIstub, args)
 	case "initLedger":
 		return s.initLedger(APIstub)
-	case "createCar":
-		return s.createCar(APIstub, args)
-	case "queryAllCars":
-		return s.queryAllCars(APIstub)
-	case "changeCarOwner":
-		return s.changeCarOwner(APIstub, args)
+	case "createAlbum":
+		return s.createAlbum(APIstub, args)
+	case "queryAllAlbums":
+		return s.queryAllAlbums(APIstub)
+	case "changeAlbumOwner":
+		return s.changeAlbumOwner(APIstub, args)
 	case "getHistoryForAsset":
 		return s.getHistoryForAsset(APIstub, args)
-	case "queryCarsByOwner":
-		return s.queryCarsByOwner(APIstub, args)
+	case "queryAlbumsByOwner":
+		return s.queryAlbumsByOwner(APIstub, args)
 	case "restictedMethod":
 		return s.restictedMethod(APIstub, args)
 	case "test":
 		return s.test(APIstub, args)
-	case "createPrivateCar":
-		return s.createPrivateCar(APIstub, args)
-	case "readPrivateCar":
-		return s.readPrivateCar(APIstub, args)
-	case "updatePrivateData":
-		return s.updatePrivateData(APIstub, args)
-	case "readCarPrivateDetails":
-		return s.readCarPrivateDetails(APIstub, args)
-	case "createPrivateCarImplicitForOrg1":
-		return s.createPrivateCarImplicitForOrg1(APIstub, args)
-	case "createPrivateCarImplicitForOrg2":
-		return s.createPrivateCarImplicitForOrg2(APIstub, args)
+	case "createPrivateAlbum":
+		return s.createPrivateAlbum(APIstub, args)
+	case "readPrivateAlbum":
+		return s.readPrivateAlbum(APIstub, args)
+	case "updatePrivateAlbum":
+		return s.updatePrivateAlbum(APIstub, args)
+	case "readAlbumPrivateDetails":
+		return s.readAlbumPrivateDetails(APIstub, args)
+	case "createPrivateAlbumImplicitForOrg1":
+		return s.createPrivateAlbumImplicitForOrg1(APIstub, args)
+	case "createPrivateAlbumImplicitForOrg2":
+		return s.createPrivateAlbumImplicitForOrg2(APIstub, args)
 	case "queryPrivateDataHash":
 		return s.queryPrivateDataHash(APIstub, args)
 	default:
@@ -85,59 +85,59 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 	// return shim.Error("Invalid Smart Contract function name.")
 }
 
-func (s *SmartContract) queryCar(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (s *SmartContract) queryAlbum(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 
-	carAsBytes, _ := APIstub.GetState(args[0])
-	return shim.Success(carAsBytes)
+	ArtisteAsBytes, _ := APIstub.GetState(args[0])
+	return shim.Success(ArtisteAsBytes)
 }
 
-func (s *SmartContract) readPrivateCar(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (s *SmartContract) readPrivateAlbum(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 2 {
 		return shim.Error("Incorrect number of arguments. Expecting 2")
 	}
-	// collectionCars, collectionCarPrivateDetails, _implicit_org_Org1MSP, _implicit_org_Org2MSP
-	carAsBytes, err := APIstub.GetPrivateData(args[0], args[1])
+	// collectionArtistes, collectionArtistePrivateDetails, _implicit_org_Org1MSP, _implicit_org_Org2MSP
+	ArtisteAsBytes, err := APIstub.GetPrivateData(args[0], args[1])
 	if err != nil {
 		jsonResp := "{\"Error\":\"Failed to get private details for " + args[1] + ": " + err.Error() + "\"}"
 		return shim.Error(jsonResp)
-	} else if carAsBytes == nil {
-		jsonResp := "{\"Error\":\"Car private details does not exist: " + args[1] + "\"}"
+	} else if ArtisteAsBytes == nil {
+		jsonResp := "{\"Error\":\"Artiste private details does not exist: " + args[1] + "\"}"
 		return shim.Error(jsonResp)
 	}
-	return shim.Success(carAsBytes)
+	return shim.Success(ArtisteAsBytes)
 }
 
-func (s *SmartContract) readPrivateCarIMpleciteForOrg1(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (s *SmartContract) readPrivateArtisteIMpleciteForOrg1(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 
-	carAsBytes, _ := APIstub.GetPrivateData("_implicit_org_Org1MSP", args[0])
-	return shim.Success(carAsBytes)
+	ArtisteAsBytes, _ := APIstub.GetPrivateData("_implicit_org_Org1MSP", args[0])
+	return shim.Success(ArtisteAsBytes)
 }
 
-func (s *SmartContract) readCarPrivateDetails(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (s *SmartContract) readAlbumPrivateDetails(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 
-	carAsBytes, err := APIstub.GetPrivateData("collectionCarPrivateDetails", args[0])
+	ArtisteAsBytes, err := APIstub.GetPrivateData("collectionArtistePrivateDetails", args[0])
 
 	if err != nil {
 		jsonResp := "{\"Error\":\"Failed to get private details for " + args[0] + ": " + err.Error() + "\"}"
 		return shim.Error(jsonResp)
-	} else if carAsBytes == nil {
+	} else if ArtisteAsBytes == nil {
 		jsonResp := "{\"Error\":\"Marble private details does not exist: " + args[0] + "\"}"
 		return shim.Error(jsonResp)
 	}
-	return shim.Success(carAsBytes)
+	return shim.Success(ArtisteAsBytes)
 }
 
 func (s *SmartContract) test(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
@@ -146,39 +146,39 @@ func (s *SmartContract) test(APIstub shim.ChaincodeStubInterface, args []string)
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 
-	carAsBytes, _ := APIstub.GetState(args[0])
-	return shim.Success(carAsBytes)
+	ArtisteAsBytes, _ := APIstub.GetState(args[0])
+	return shim.Success(ArtisteAsBytes)
 }
 
 func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
-	cars := []Car{
-		Car{Make: "Toyota", Model: "Prius", Colour: "blue", Owner: "Tomoko"},
-		Car{Make: "Ford", Model: "Mustang", Colour: "red", Owner: "Brad"},
-		Car{Make: "Hyundai", Model: "Tucson", Colour: "green", Owner: "Jin Soo"},
-		Car{Make: "Volkswagen", Model: "Passat", Colour: "yellow", Owner: "Max"},
-		Car{Make: "Tesla", Model: "S", Colour: "black", Owner: "Adriana"},
-		Car{Make: "Peugeot", Model: "205", Colour: "purple", Owner: "Michel"},
-		Car{Make: "Chery", Model: "S22L", Colour: "white", Owner: "Aarav"},
-		Car{Make: "Fiat", Model: "Punto", Colour: "violet", Owner: "Pari"},
-		Car{Make: "Tata", Model: "Nano", Colour: "indigo", Owner: "Valeria"},
-		Car{Make: "Holden", Model: "Barina", Colour: "brown", Owner: "Shotaro"},
+	artistes := []Album{
+		Album{AlbumName: "OverdemAll", Ext: ".mp3", Title: "blue", Owner: "Davido"},
+		Album{AlbumName: "Damini", Ext: ".mp3", Title: "red", Owner: "Wizkid"},
+		Album{AlbumName: "OverdemAll", Ext: ".mp3", Title: "green", Owner: "Davido"},
+		Album{AlbumName: "Damini", Ext: ".mp3", Title: "yellow", Owner: "Wizkid"},
+		Album{AlbumName: "OverdemAll", Ext: ".mp3", Title: "black", Owner: "Davido"},
+		Album{AlbumName: "Damini", Ext: ".mp3", Title: "purple", Owner: "Wizkid"},
+		Album{AlbumName: "OverdemAll", Ext: ".mp3", Title: "white", Owner: "Davido"},
+		Album{AlbumName: "Damini", Ext: ".mp3", Title: "violet", Owner: "Wizkid"},
+		Album{AlbumName: "OverdemAll", Ext: ".mp3", Title: "indigo", Owner: "Davido"},
+		Album{AlbumName: "Damini", Ext: ".mp3", Title: "brown", Owner: "Wizkid"},
 	}
 
 	i := 0
-	for i < len(cars) {
-		carAsBytes, _ := json.Marshal(cars[i])
-		APIstub.PutState("CAR"+strconv.Itoa(i), carAsBytes)
+	for i < len(artistes) {
+		ArtisteAsBytes, _ := json.Marshal(artistes[i])
+		APIstub.PutState("Artiste"+strconv.Itoa(i), ArtisteAsBytes)
 		i = i + 1
 	}
 
 	return shim.Success(nil)
 }
 
-func (s *SmartContract) createPrivateCar(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
-	type carTransientInput struct {
-		Make  string `json:"make"` //the fieldtags are needed to keep case from bouncing around
-		Model string `json:"model"`
-		Color string `json:"color"`
+func (s *SmartContract) createPrivateAlbum(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+	type ArtisteTransientInput struct {
+		Album  string `json:"album"` //the fieldtags are needed to keep case from bouncing around
+		Ext string `json:"ext"`
+		Title string `json:"title"`
 		Owner string `json:"owner"`
 		Price string `json:"price"`
 		Key   string `json:"key"`
@@ -194,92 +194,92 @@ func (s *SmartContract) createPrivateCar(APIstub shim.ChaincodeStubInterface, ar
 		return shim.Error("222222 -Error getting transient: " + err.Error())
 	}
 
-	carDataAsBytes, ok := transMap["car"]
+	ArtisteDataAsBytes, ok := transMap["Artiste"]
 	if !ok {
-		return shim.Error("car must be a key in the transient map")
+		return shim.Error("Artiste must be a key in the transient map")
 	}
-	logger.Infof("********************8   " + string(carDataAsBytes))
+	logger.Infof("********************8   " + string(ArtisteDataAsBytes))
 
-	if len(carDataAsBytes) == 0 {
+	if len(ArtisteDataAsBytes) == 0 {
 		return shim.Error("333333 -marble value in the transient map must be a non-empty JSON string")
 	}
 
 	logger.Infof("2222222")
 
-	var carInput carTransientInput
-	err = json.Unmarshal(carDataAsBytes, &carInput)
+	var ArtisteInput ArtisteTransientInput
+	err = json.Unmarshal(ArtisteDataAsBytes, &ArtisteInput)
 	if err != nil {
-		return shim.Error("44444 -Failed to decode JSON of: " + string(carDataAsBytes) + "Error is : " + err.Error())
+		return shim.Error("44444 -Failed to decode JSON of: " + string(ArtisteDataAsBytes) + "Error is : " + err.Error())
 	}
 
 	logger.Infof("3333")
 
-	if len(carInput.Key) == 0 {
+	if len(ArtisteInput.Key) == 0 {
 		return shim.Error("name field must be a non-empty string")
 	}
-	if len(carInput.Make) == 0 {
+	if len(ArtisteInput.Album) == 0 {
 		return shim.Error("color field must be a non-empty string")
 	}
-	if len(carInput.Model) == 0 {
-		return shim.Error("model field must be a non-empty string")
+	if len(ArtisteInput.Ext) == 0 {
+		return shim.Error("Ext field must be a non-empty string")
 	}
-	if len(carInput.Color) == 0 {
+	if len(ArtisteInput.Title) == 0 {
 		return shim.Error("color field must be a non-empty string")
 	}
-	if len(carInput.Owner) == 0 {
+	if len(ArtisteInput.Owner) == 0 {
 		return shim.Error("owner field must be a non-empty string")
 	}
-	if len(carInput.Price) == 0 {
+	if len(ArtisteInput.Price) == 0 {
 		return shim.Error("price field must be a non-empty string")
 	}
 
 	logger.Infof("444444")
 
-	// ==== Check if car already exists ====
-	carAsBytes, err := APIstub.GetPrivateData("collectionCars", carInput.Key)
+	// ==== Check if Artiste already exists ====
+	ArtisteAsBytes, err := APIstub.GetPrivateData("collectionArtistes", ArtisteInput.Key)
 	if err != nil {
 		return shim.Error("Failed to get marble: " + err.Error())
-	} else if carAsBytes != nil {
-		fmt.Println("This car already exists: " + carInput.Key)
-		return shim.Error("This car already exists: " + carInput.Key)
+	} else if ArtisteAsBytes != nil {
+		fmt.Println("This Artiste already exists: " + ArtisteInput.Key)
+		return shim.Error("This Artiste already exists: " + ArtisteInput.Key)
 	}
 
 	logger.Infof("55555")
 
-	var car = Car{Make: carInput.Make, Model: carInput.Model, Colour: carInput.Color, Owner: carInput.Owner}
+	var Artiste = Album{AlbumName: ArtisteInput.Album, Ext: ArtisteInput.Ext, Title: ArtisteInput.Title, Owner: ArtisteInput.Owner}
 
-	carAsBytes, err = json.Marshal(car)
+	ArtisteAsBytes, err = json.Marshal(Artiste)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	err = APIstub.PutPrivateData("collectionCars", carInput.Key, carAsBytes)
+	err = APIstub.PutPrivateData("collectionArtistes", ArtisteInput.Key, ArtisteAsBytes)
 	if err != nil {
 		logger.Infof("6666666")
 		return shim.Error(err.Error())
 	}
 
-	carPrivateDetails := &carPrivateDetails{Owner: carInput.Owner, Price: carInput.Price}
+	ArtistePrivateDetails := &artistePrivateDetails{Owner: ArtisteInput.Owner, Price: ArtisteInput.Price}
 
-	carPrivateDetailsAsBytes, err := json.Marshal(carPrivateDetails)
+	ArtistePrivateDetailsAsBytes, err := json.Marshal(ArtistePrivateDetails)
 	if err != nil {
 		logger.Infof("77777")
 		return shim.Error(err.Error())
 	}
 
-	err = APIstub.PutPrivateData("collectionCarPrivateDetails", carInput.Key, carPrivateDetailsAsBytes)
+	err = APIstub.PutPrivateData("collectionArtistePrivateDetails", ArtisteInput.Key, ArtistePrivateDetailsAsBytes)
 	if err != nil {
 		logger.Infof("888888")
 		return shim.Error(err.Error())
 	}
 
-	return shim.Success(carAsBytes)
+	return shim.Success(ArtisteAsBytes)
 }
 
-func (s *SmartContract) updatePrivateData(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (s *SmartContract) updatePrivateAlbum(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
-	type carTransientInput struct {
+	type ArtisteTransientInput struct {
 		Owner string `json:"owner"`
-		Price string `json:"price"`
+		Title string `json:"title"`
 		Key   string `json:"key"`
 	}
 	if len(args) != 0 {
@@ -293,65 +293,65 @@ func (s *SmartContract) updatePrivateData(APIstub shim.ChaincodeStubInterface, a
 		return shim.Error("222222 -Error getting transient: " + err.Error())
 	}
 
-	carDataAsBytes, ok := transMap["car"]
+	ArtisteDataAsBytes, ok := transMap["Artiste"]
 	if !ok {
-		return shim.Error("car must be a key in the transient map")
+		return shim.Error("Artiste must be a key in the transient map")
 	}
-	logger.Infof("********************8   " + string(carDataAsBytes))
+	logger.Infof("********************8   " + string(ArtisteDataAsBytes))
 
-	if len(carDataAsBytes) == 0 {
+	if len(ArtisteDataAsBytes) == 0 {
 		return shim.Error("333333 -marble value in the transient map must be a non-empty JSON string")
 	}
 
 	logger.Infof("2222222")
 
-	var carInput carTransientInput
-	err = json.Unmarshal(carDataAsBytes, &carInput)
+	var ArtisteInput ArtisteTransientInput
+	err = json.Unmarshal(ArtisteDataAsBytes, &ArtisteInput)
 	if err != nil {
-		return shim.Error("44444 -Failed to decode JSON of: " + string(carDataAsBytes) + "Error is : " + err.Error())
+		return shim.Error("44444 -Failed to decode JSON of: " + string(ArtisteDataAsBytes) + "Error is : " + err.Error())
 	}
 
-	carPrivateDetails := &carPrivateDetails{Owner: carInput.Owner, Price: carInput.Price}
+	ArtistePrivateDetails := &artistePrivateDetails{Owner: ArtisteInput.Owner, Price: ArtisteInput.Title}
 
-	carPrivateDetailsAsBytes, err := json.Marshal(carPrivateDetails)
+	ArtistePrivateDetailsAsBytes, err := json.Marshal(ArtistePrivateDetails)
 	if err != nil {
 		logger.Infof("77777")
 		return shim.Error(err.Error())
 	}
 
-	err = APIstub.PutPrivateData("collectionCarPrivateDetails", carInput.Key, carPrivateDetailsAsBytes)
+	err = APIstub.PutPrivateData("collectionArtistePrivateDetails", ArtisteInput.Key, ArtistePrivateDetailsAsBytes)
 	if err != nil {
 		logger.Infof("888888")
 		return shim.Error(err.Error())
 	}
 
-	return shim.Success(carPrivateDetailsAsBytes)
+	return shim.Success(ArtistePrivateDetailsAsBytes)
 
 }
 
-func (s *SmartContract) createCar(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (s *SmartContract) createAlbum(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 5 {
 		return shim.Error("Incorrect number of arguments. Expecting 5")
 	}
 
-	var car = Car{Make: args[1], Model: args[2], Colour: args[3], Owner: args[4]}
+	var Artiste = Album{AlbumName: args[1], Ext: args[2], Title: args[3], Owner: args[4]}
 
-	carAsBytes, _ := json.Marshal(car)
-	APIstub.PutState(args[0], carAsBytes)
+	ArtisteAsBytes, _ := json.Marshal(Artiste)
+	APIstub.PutState(args[0], ArtisteAsBytes)
 
 	indexName := "owner~key"
-	colorNameIndexKey, err := APIstub.CreateCompositeKey(indexName, []string{car.Owner, args[0]})
+	colorNameIndexKey, err := APIstub.CreateCompositeKey(indexName, []string{Artiste.Owner, args[0]})
 	if err != nil {
 		return shim.Error(err.Error())
 	}
 	value := []byte{0x00}
 	APIstub.PutState(colorNameIndexKey, value)
 
-	return shim.Success(carAsBytes)
+	return shim.Success(ArtisteAsBytes)
 }
 
-func (S *SmartContract) queryCarsByOwner(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (S *SmartContract) queryAlbumsByOwner(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments")
@@ -368,10 +368,10 @@ func (S *SmartContract) queryCarsByOwner(APIstub shim.ChaincodeStubInterface, ar
 	var i int
 	var id string
 
-	var cars []byte
+	var Artistes []byte
 	bArrayMemberAlreadyWritten := false
 
-	cars = append([]byte("["))
+	Artistes = append([]byte("["))
 
 	for i = 0; ownerAndIdResultIterator.HasNext(); i++ {
 		responseRange, err := ownerAndIdResultIterator.Next()
@@ -389,11 +389,11 @@ func (S *SmartContract) queryCarsByOwner(APIstub shim.ChaincodeStubInterface, ar
 
 		if bArrayMemberAlreadyWritten == true {
 			newBytes := append([]byte(","), assetAsBytes...)
-			cars = append(cars, newBytes...)
+			Artistes = append(Artistes, newBytes...)
 
 		} else {
-			// newBytes := append([]byte(","), carsAsBytes...)
-			cars = append(cars, assetAsBytes...)
+			// newBytes := append([]byte(","), ArtistesAsBytes...)
+			Artistes = append(Artistes, assetAsBytes...)
 		}
 
 		fmt.Printf("Found a asset for index : %s asset id : ", objectType, compositeKeyParts[0], compositeKeyParts[1])
@@ -401,15 +401,15 @@ func (S *SmartContract) queryCarsByOwner(APIstub shim.ChaincodeStubInterface, ar
 
 	}
 
-	cars = append(cars, []byte("]")...)
+	Artistes = append(Artistes, []byte("]")...)
 
-	return shim.Success(cars)
+	return shim.Success(Artistes)
 }
 
-func (s *SmartContract) queryAllCars(APIstub shim.ChaincodeStubInterface) sc.Response {
+func (s *SmartContract) queryAllAlbums(APIstub shim.ChaincodeStubInterface) sc.Response {
 
-	startKey := "CAR0"
-	endKey := "CAR999"
+	startKey := "Artiste0"
+	endKey := "Artiste999"
 
 	resultsIterator, err := APIstub.GetStateByRange(startKey, endKey)
 	if err != nil {
@@ -444,7 +444,7 @@ func (s *SmartContract) queryAllCars(APIstub shim.ChaincodeStubInterface) sc.Res
 	}
 	buffer.WriteString("]")
 
-	fmt.Printf("- queryAllCars:\n%s\n", buffer.String())
+	fmt.Printf("- queryAllArtistes:\n%s\n", buffer.String())
 
 	return shim.Success(buffer.Bytes())
 }
@@ -460,7 +460,7 @@ func (s *SmartContract) restictedMethod(APIstub shim.ChaincodeStubInterface, arg
 	// get the value of the attribute
 	//val, ok, err := cid.GetAttributeValue(APIstub, "attr1") -
 
-	// get the X509 certificate of the client, or nil if the client's identity was not based on an X509 certificate
+	// get the X509 certifite of the client, or nil if the client's identity was not based on an X509 certifiPratite
 	//cert, err := cid.GetX509Certificate(APIstub) -
 
 	val, ok, err := cid.GetAttributeValue(APIstub, "role")
@@ -481,28 +481,28 @@ func (s *SmartContract) restictedMethod(APIstub shim.ChaincodeStubInterface, arg
 			return shim.Error("Incorrect number of arguments. Expecting 1")
 		}
 
-		carAsBytes, _ := APIstub.GetState(args[0])
-		return shim.Success(carAsBytes)
+		ArtisteAsBytes, _ := APIstub.GetState(args[0])
+		return shim.Success(ArtisteAsBytes)
 	}
 
 }
 
-func (s *SmartContract) changeCarOwner(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (s *SmartContract) changeAlbumOwner(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 2 {
 		return shim.Error("Incorrect number of arguments. Expecting 2")
 	}
 
-	carAsBytes, _ := APIstub.GetState(args[0])
-	car := Car{}
+	ArtisteAsBytes, _ := APIstub.GetState(args[0])
+	Artiste := Album{}
 
-	json.Unmarshal(carAsBytes, &car)
-	car.Owner = args[1]
+	json.Unmarshal(ArtisteAsBytes, &Artiste)
+	Artiste.Owner = args[1]
 
-	carAsBytes, _ = json.Marshal(car)
-	APIstub.PutState(args[0], carAsBytes)
+	ArtisteAsBytes, _ = json.Marshal(Artiste)
+	APIstub.PutState(args[0], ArtisteAsBytes)
 
-	return shim.Success(carAsBytes)
+	return shim.Success(ArtisteAsBytes)
 }
 
 func (t *SmartContract) getHistoryForAsset(stub shim.ChaincodeStubInterface, args []string) sc.Response {
@@ -511,9 +511,9 @@ func (t *SmartContract) getHistoryForAsset(stub shim.ChaincodeStubInterface, arg
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 
-	carName := args[0]
+	ArtisteName := args[0]
 
-	resultsIterator, err := stub.GetHistoryForKey(carName)
+	resultsIterator, err := stub.GetHistoryForKey(ArtisteName)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -568,40 +568,40 @@ func (t *SmartContract) getHistoryForAsset(stub shim.ChaincodeStubInterface, arg
 	return shim.Success(buffer.Bytes())
 }
 
-func (s *SmartContract) createPrivateCarImplicitForOrg1(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (s *SmartContract) createPrivateAlbumImplicitForOrg1(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 5 {
 		return shim.Error("Incorrect arguments. Expecting 5 arguments")
 	}
 
-	var car = Car{Make: args[1], Model: args[2], Colour: args[3], Owner: args[4]}
+	var Artiste = Album{AlbumName: args[1], Ext: args[2], Title: args[3], Owner: args[4]}
 
-	carAsBytes, _ := json.Marshal(car)
-	// APIstub.PutState(args[0], carAsBytes)
+	ArtisteAsBytes, _ := json.Marshal(Artiste)
+	// APIstub.PutState(args[0], ArtisteAsBytes)
 
-	err := APIstub.PutPrivateData("_implicit_org_Org1MSP", args[0], carAsBytes)
+	err := APIstub.PutPrivateData("_implicit_org_Org1MSP", args[0], ArtisteAsBytes)
 	if err != nil {
 		return shim.Error("Failed to add asset: " + args[0])
 	}
-	return shim.Success(carAsBytes)
+	return shim.Success(ArtisteAsBytes)
 }
 
-func (s *SmartContract) createPrivateCarImplicitForOrg2(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (s *SmartContract) createPrivateAlbumImplicitForOrg2(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 5 {
 		return shim.Error("Incorrect arguments. Expecting 5 arguments")
 	}
 
-	var car = Car{Make: args[1], Model: args[2], Colour: args[3], Owner: args[4]}
+	var Artiste = Album{AlbumName: args[1], Ext: args[2], Title: args[3], Owner: args[4]}
 
-	carAsBytes, _ := json.Marshal(car)
-	APIstub.PutState(args[0], carAsBytes)
+	ArtisteAsBytes, _ := json.Marshal(Artiste)
+	APIstub.PutState(args[0], ArtisteAsBytes)
 
-	err := APIstub.PutPrivateData("_implicit_org_Org2MSP", args[0], carAsBytes)
+	err := APIstub.PutPrivateData("_implicit_org_Org2MSP", args[0], ArtisteAsBytes)
 	if err != nil {
 		return shim.Error("Failed to add asset: " + args[0])
 	}
-	return shim.Success(carAsBytes)
+	return shim.Success(ArtisteAsBytes)
 }
 
 func (s *SmartContract) queryPrivateDataHash(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
@@ -609,27 +609,27 @@ func (s *SmartContract) queryPrivateDataHash(APIstub shim.ChaincodeStubInterface
 	if len(args) != 2 {
 		return shim.Error("Incorrect number of arguments. Expecting 2")
 	}
-	carAsBytes, _ := APIstub.GetPrivateDataHash(args[0], args[1])
-	return shim.Success(carAsBytes)
+	ArtisteAsBytes, _ := APIstub.GetPrivateDataHash(args[0], args[1])
+	return shim.Success(ArtisteAsBytes)
 }
 
-// func (s *SmartContract) CreateCarAsset(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+// func (s *SmartContract) CreateArtisteAsset(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 // 	if len(args) != 1 {
 // 		return shim.Error("Incorrect number of arguments. Expecting 1")
 // 	}
 
-// 	var car Car
-// 	err := json.Unmarshal([]byte(args[0]), &car)
+// 	var Artiste Artiste
+// 	err := json.Unmarshal([]byte(args[0]), &Artiste)
 // 	if err != nil {
 // 		return shim.Error(err.Error())
 // 	}
 
-// 	carAsBytes, err := json.Marshal(car)
+// 	ArtisteAsBytes, err := json.Marshal(Artiste)
 // 	if err != nil {
 // 		return shim.Error(err.Error())
 // 	}
 
-// 	err = APIstub.PutState(car.ID, carAsBytes)
+// 	err = APIstub.PutState(Artiste.ID, ArtisteAsBytes)
 // 	if err != nil {
 // 		return shim.Error(err.Error())
 // 	}
@@ -649,12 +649,12 @@ func (s *SmartContract) queryPrivateDataHash(APIstub shim.ChaincodeStubInterface
 // 	for i, s := range args {
 
 // 		key :=s[0];
-// 		var car = Car{Make: s[1], Model: s[2], Colour: s[3], Owner: s[4]}
+// 		var Artiste = Artiste{Album: s[1], Ext: s[2], Title: s[3], Owner: s[4]}
 
 // 		eventKeyValue = strings.SplitN(s, "#", 3)
 // 		if len(eventKeyValue) != 3 {
-// 			logger.Errorf("Error occured, Please make sure that you have provided the array of strings and each string should be  in \"EventType#Key#Value\" format")
-// 			return shim.Error("Error occured, Please make sure that you have provided the array of strings and each string should be  in \"EventType#Key#Value\" format")
+// 			logger.Errorf("Error occured, Please Album sure that you have provided the array of strings and each string should be  in \"EventType#Key#Value\" format")
+// 			return shim.Error("Error occured, Please Album sure that you have provided the array of strings and each string should be  in \"EventType#Key#Value\" format")
 // 		}
 
 // 		assetAsBytes := []byte(eventKeyValue[2])

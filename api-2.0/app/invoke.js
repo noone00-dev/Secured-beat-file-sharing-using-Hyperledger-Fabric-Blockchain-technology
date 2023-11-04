@@ -6,6 +6,8 @@ const logger = log4js.getLogger('BasicNetwork');
 const util = require('util')
 
 const helper = require('./helper')
+//        let message = await invoke.invokeTransaction(channelName, chaincodeName, fcn, args, req.username, req.orgname, transient);
+
 
 const invokeTransaction = async (channelName, chaincodeName, fcn, args, username, org_name, transientData) => {
     try {
@@ -52,31 +54,34 @@ const invokeTransaction = async (channelName, chaincodeName, fcn, args, username
         const network = await gateway.getNetwork(channelName);
 
         const contract = network.getContract(chaincodeName);
+        //console.log(contract)
 
         let result
         let message;
-        if (fcn === "createCar" || fcn === "createPrivateCarImplicitForOrg1"
-            || fcn == "createPrivateCarImplicitForOrg2") {
+        if (fcn === "createAlbum" || fcn === "createPrivateAlbumImplicitForOrg1"
+            || fcn == "createPrivateAlbumImplicitForOrg2") {
             result = await contract.submitTransaction(fcn, args[0], args[1], args[2], args[3], args[4]);
-            message = `Successfully added the car asset with key ${args[0]}`
+            message = `Successfully added the music asset with key ${args[0]}`
 
-        } else if (fcn === "changeCarOwner") {
+        } else if (fcn === "changeAlbumOwner") {
             result = await contract.submitTransaction(fcn, args[0], args[1]);
-            message = `Successfully changed car owner with key ${args[0]}`
-        } else if (fcn == "createPrivateCar" || fcn =="updatePrivateData") {
+            message = `Successfully changed music owner with key ${args[0]}`
+        } else if (fcn == "createPrivateAlbum" || fcn =="updatePrivateAlbum") {
             console.log(`Transient data is : ${transientData}`)
             let carData = JSON.parse(transientData)
             console.log(`car data is : ${JSON.stringify(carData)}`)
             let key = Object.keys(carData)[0]
+            console.log(key)
             const transientDataBuffer = {}
-            transientDataBuffer[key] = Buffer.from(JSON.stringify(carData.car))
+            transientDataBuffer[key] = Buffer.from(JSON.stringify(carData.Artiste))
             result = await contract.createTransaction(fcn)
                 .setTransient(transientDataBuffer)
                 .submit()
             message = `Successfully submitted transient data`
         }
         else {
-            return `Invocation require either createCar or changeCarOwner as function but got ${fcn}`
+           // console.log("Chaincodeeeeeeeeeeee")
+            return `Invocation require either createAlbum or changeAlbumOwner as function but got ${fcn}`
         }
 
         await gateway.disconnect();

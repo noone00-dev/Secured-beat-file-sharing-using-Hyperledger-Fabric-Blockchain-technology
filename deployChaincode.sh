@@ -60,7 +60,7 @@ CHANNEL_NAME="mychannel"
 CC_RUNTIME_LANGUAGE="golang"
 VERSION="1"
 CC_SRC_PATH="./artifacts/src/github.com/fabcar/go"
-CC_NAME="fabcar"
+CC_NAME="music"
 
 packageChaincode() {
     rm -rf ${CC_NAME}.tar.gz
@@ -251,7 +251,7 @@ chaincodeInvoke() {
         -c '{"function": "initLedger","Args":[]}'
 
     ## Add private data
-    export CAR=$(echo -n "{\"key\":\"1111\", \"make\":\"Tesla\",\"model\":\"Tesla A1\",\"color\":\"White\",\"owner\":\"pavan\",\"price\":\"10000\"}" | base64 | tr -d \\n)
+    export CAR=$(echo -n "{\"key\":\"1111\", \"Album\":\"Temptation\",\"Ext\":\".mp3\",\"Title\":\"Who dey?\",\"owner\":\"davido\",\"price\":\"10000\"}" | base64 | tr -d \\n)
     peer chaincode invoke -o localhost:7050 \
         --ordererTLSHostnameOverride orderer.example.com \
         --tls $CORE_PEER_TLS_ENABLED \
@@ -259,7 +259,7 @@ chaincodeInvoke() {
         -C $CHANNEL_NAME -n ${CC_NAME} \
         --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
         --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
-        -c '{"function": "createPrivateCar", "Args":[]}' \
+        -c '{"function": "createPrivateAlbum", "Args":[]}' \
         --transient "{\"car\":\"$CAR\"}"
 }
 
@@ -269,42 +269,46 @@ chaincodeQuery() {
     setGlobalsForPeer0Org2
 
     # Query all cars
-    # peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"Args":["queryAllCars"]}'
+     #peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"Args":["queryAllArtiste"]}'
 
     # Query Car by Id
-    peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "queryCar","Args":["CAR0"]}'
+    peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "queryAllAlbums","Args":[]}'
     #'{"Args":["GetSampleData","Key1"]}'
 
     # Query Private Car by Id
     # peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "readPrivateCar","Args":["1111"]}'
     # peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "readCarPrivateDetails","Args":["1111"]}'
+
+    #readArtistePrivateDetails
+    #queryArtiste
+    #createArtiste
 }
 
 # chaincodeQuery
 
 # Run this function if you add any new dependency in chaincode
-presetup
-sleep 5
-packageChaincode
-sleep 5
-installChaincode
-sleep 5
-queryInstalled
-sleep 5
-approveForMyOrg1
-sleep 5
-checkCommitReadyness
-sleep 5
-approveForMyOrg2
-sleep 5
-checkCommitReadyness
-sleep 5
-commitChaincodeDefination
-sleep 5
-queryCommitted
-sleep 5
-chaincodeInvokeInit
-sleep 5
-chaincodeInvoke
+# presetup
+# sleep 5
+# packageChaincode
+# sleep 5
+# installChaincode
+# sleep 5
+# queryInstalled
+# sleep 5
+# approveForMyOrg1
+# sleep 5
+# checkCommitReadyness
+# sleep 5
+# approveForMyOrg2
+# sleep 5
+# checkCommitReadyness
+# sleep 5
+# commitChaincodeDefination
+# sleep 5
+# queryCommitted
+# sleep 5
+#   chaincodeInvokeInit
+#   sleep 5
+#  chaincodeInvoke
 sleep 3
 chaincodeQuery
